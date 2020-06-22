@@ -76,10 +76,7 @@ html.no-js(lang='ko')
               .logo-area
                 a(href='/')
                   img(src='/img/logo/logo.png', alt='')
-                span#currentTimeSpan(style='margin-right: 30px')
-                a
-                  img#speaker(src='/speaker2.png', onclick='changeStatus()')
-                
+                span#currentTimeSpan(style='margin-right: 30px')   
             .col-lg-4.col-md-4.col-sm-12.col-xs-12
               .header-top-menu.align-middle
                 button.btn.waves-effect.mode-slt-btn#modeSimulation(data-toggle="modal", data-target="#sktSimulModal") RM Simulation
@@ -133,8 +130,11 @@ html.no-js(lang='ko')
                   span
                     i.fa.fa-caret-down
                 ul#dropdown-centers.dropdown-menu.triger-fadeIn-dp
+            .col-lg-1.col-md-2.col-sm-8.col-xs-4
+              a(float='right')
+                  img#speaker.align-middle(src='/speaker2.png', onclick='changeStatus()', width='50px', style='margin-top:5px') 
             .col-lg-2.col-md-2.col-sm-8.col-xs-4
-              .header-top-menu.align-middle
+              .header-top-menu
                 button.btn.waves-effect.data-rcv-info-btn.data-rcv-info-ttl 미수집 : 
                 button#data-rcv-info.btn.waves-effect.data-rcv-info-btn.btn-status(data-toggle="modal", data-target="#sktCollectionModal")
                 //-  

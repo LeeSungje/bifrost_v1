@@ -644,6 +644,84 @@ function ajaxInsertStatToAlarm(url){
 
   });
 }
+
+/* sj 20-06-18 */
+function ajaxUncollected(url){
+  $.ajax({
+    url: url,
+    type: "GET"
+  })
+  .done(function(data){
+    var json = JSON.parse(data);
+
+    var eventTime = json.result[1].eventTime;
+    var alarm_type = json.result[1].alarm_type;
+    var system_name = json.result[1].serverName;
+    var serverLocation = json.result[1].serverLocation;
+    var event = json.result[1].event;
+    var site = json.result[1].site;
+    var alarm_code = json.result[1].alarm_code;
+    
+    console.log(json.result[1]);
+    
+    var statusClass = "";
+    var statusText = "";
+    
+    $("#alarm-table").find(".skt-alarm-txt").remove();
+    $(".skt-map-center").removeClass("cri-alert-on maj-alert-on min-alert-on skt-map-status-cri skt-map-status-maj skt-map-status-min");
+    $(".sys-container").removeClass("alarm-twinkle");
+
+	$("#skt-map-cont-2").find(".audio").remove(); //sj
+	
+    
+    eventTime.forEach(function(e,index){
+    	var timeAddHtml = "<p class='skt-alarm-txt'>"+eventTime[index]+"</p>";
+	    var targetAddHtml = "<p class='skt-alarm-txt'>"+system_name[index]+"</p>";
+	    var locationAddHtml = "<p class='skt-alarm-txt'>"+serverLocation[index]+"</p>";
+	    var eventAddHtml = "<p class='skt-alarm-txt'>"+event[index]+"</p>";
+	    $("#alarmEventTimeContainer").append(timeAddHtml);
+	    $("#alarmTargetContainer").append(targetAddHtml);
+	    $("#alarmLocationContainer").append(locationAddHtml);
+	    $("#alarmDetailsContainer").append(eventAddHtml);
+	    
+	    
+	    
+	    if((system_name.toString()).match("PGW*")){
+	      	 $("#PGW").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("SGW*")){
+      	 $("#SGW").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("MME*")){
+      	 $("#MME").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("MSS*")){
+      	 $("#MSS").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("TAS*")){
+      	 $("#TAS").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("HSS*")){
+      	 $("#HSS").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("HLR*")){
+      	 $("#HLR").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("AUC*")){
+      	 $("#AUC").addClass("alarm-twinkle");
+       }if((system_name.toString()).match("UCMS*")){
+      	 $("#UCMS").addClass("alarm-twinkle");
+       }
+    });
+    	
+    if(site != 0) { 
+  	  statusClass = "cri-alert-on skt-map-status-cri"; statusText = "critical"; 
+    }
+	$("#skt-map-center-"+site).addClass(statusClass);
+	$("#skt-map-center-"+site).find(".skt-map-status-btn").text(statusText);
+	
+	//sj
+	if(document.getElementsByClassName("alarm-twinkle").length > 0 && sound_status==1) 
+	{
+		$("#skt-map-cont-2").append(audio);
+	}
+	
+  });
+}
+
 /** 2019.05.18 Customized setInterval function to execute the function before set setInterval action */
 function executeSetInterval(func, delay){
   func();
