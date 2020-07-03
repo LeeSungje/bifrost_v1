@@ -5566,7 +5566,7 @@ body.box-layout {
 
 .sys-detail-box {
 	background: rgba(88,88,155,0.2);
-	max-height: 100px;
+	max-height: 150px;
 	padding-top: 10px;
 	padding-bottom: 20px;
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26),
@@ -5577,11 +5577,6 @@ body.box-layout {
 .sys-detail-ttl {
 	font-size: 35px;
 	font-weight: 700;
-	text-align: center;
-}
-
-.sys-detail-name {
-	font-size: 30px;
 	text-align: center;
 }
 
@@ -5606,6 +5601,8 @@ body.box-layout {
 	padding: 20px 10px 20px 20px;
 	height: 800px;
 }
+
+
 .border-system-detail{
 	margin: 20px 0px 20px 0px;
 	text-align: center;
@@ -5641,6 +5638,8 @@ body.box-layout {
 	box-shadow: 0 2px 5px 0 rgba(25,189,158, 0.26),
 		0 2px 10px 0 rgba(25,189,158,0.22);
 }
+
+
 
 .pgw-detail-panel{
 	margin: 10px 0px 20px 70px;
@@ -5693,88 +5692,20 @@ body.box-layout {
 }
 
 
-/* 2020.04.07 Added RM page -MK- */
+/* 2020.04.07 Added admin page -MK- */
 /*----------------------------------------*/
-/*  71. PGW-RM
+/*  70. PGW-RM
 /*----------------------------------------*/
 .custom-control-label{
-	font-size: 30px; 
-	font-weight: 700;
-	text-align: center;
-	color: rgba(25,189,158);
-}
-
-/* 2020.05.08 Added admin page -MK- */
-/*----------------------------------------*/
-/*  72. TAS-LIST 
-/*----------------------------------------*/
-
-.tas-panel{
-	border: 5px outset rgba(25,189,158);
-	margin: 50px 50px 10px 90px;
-	padding: 20px 10px 20px 20px;
-	height: 700px;
-}
-
-
-/* 2020.05.10 Added PGW-Detail Area -MK- */
-/*----------------------------------------*/
-/*  73. TAS-Detail
-/*----------------------------------------*/
-.tas-container{
-	margin: 0px 0px 0px 80px;
-}
-
-.tas-detail-header{
-	text-align: center;
-}
-
-.tas-stat-panel{
-	border: 2px outset rgba(25,189,158);
-	margin: 10px 10px 10px 10px;
-	height: 50px;
-	box-shadow: 0 2px 5px 0 rgba(25,189,158, 0.26),
-		0 2px 10px 0 rgba(25,189,158,0.22);
-}
-
-.tas-detail-panel{
-	margin: 10px 0px 20px 70px;
-}
-.tas-detail-ttl{
-	font-size: 60px;
-	font-weight: 700;
-	text-align: center;
-	margin: 55px 0px 0px 0px;
-}
-.tas-detail-txt{
 	font-size: 30px;
 	font-weight: 700;
 	text-align: center;
 	color: rgba(25,189,158);
 }
 
-.tas-stat-ttl{
-	font-size: 60px;
-	font-weight: 700;
-}
-.tas-stat-txt{
-	font-size: 20px;
-	font-weight: 700;
-	text-align: center;
-	padding: 10px;
-	color: rgba(25,189,158);
-}
 
-.tas-chart{
-	width: 30px;
-	height: 30px;
-}
 
-.tas-txt-delimiter {
-	font-size: 20px;
-}
-
-/*------------------------- sj 2020.04.18  start---------------------------*/
+/* sj 2020.04.18 : hss-list.jade */
 .active-hss-panel{
 	border: 5px outset rgba(25,189,158);
 	margin: 150px 100px 10px 110px;
@@ -5797,7 +5728,7 @@ body.box-layout {
 }
 
 
-/* 2020.04.20 : hss-detail.jade */
+/* sj 2020.04.20 : hss-detail.jade */
 .hss-stat-panel{
 	border: 2px outset rgba(25,189,158);
 	margin: 10px 10px 10px 10px;
@@ -5865,7 +5796,7 @@ body.box-layout {
 }
 
 
-/* 2020.04.20 : hss-rm.jade */
+/* sj 2020.04.20 : hss-rm.jade */
 
 .hss-rm-cont{
 	margin: 20px 0px 0px 250px;
@@ -5873,7 +5804,7 @@ body.box-layout {
 
 
 
-/* 2020.04.25 : hlr-*.jade */
+/* sj 2020.04.25 : hlr-*.jade */
 .active-Hlr-panel{
 	border: 5px outset rgba(25,189,158);
 	margin: 150px 100px 10px 110px;
@@ -5956,14 +5887,14 @@ body.box-layout {
 }
 
 
-/* 2020.04.26 : hlr-rm.jade */
+/* sj 2020.04.26 : hlr-rm.jade */
 
 .hlr-rm-cont{
 	margin: 20px 0px 0px 250px;
 }
 
 
-/*  2020.04.30 : auc-list.jade */
+/* sj 2020.04.30 : auc-list.jade */
 .auc21-panel{
 	border: 5px outset rgba(25,189,158);
 	margin: 150px 100px 10px 110px;
@@ -5986,7 +5917,7 @@ body.box-layout {
 }
 
 
-/*  2020.05.04 : auc-detail.jade */
+/* sj 2020.05.04 : auc-detail.jade */
 .auc-stat-panel{
 	border: 2px outset rgba(25,189,158);
 	margin: 10px 10px 10px 10px;
@@ -6015,7 +5946,7 @@ body.box-layout {
 	margin: 10px 0px 20px 70px;
 }
 .auc-detail-ttl{
-	font-size: 53px;
+	font-size: 60px;
 	font-weight: 700;
 	text-align: center;
 	margin: 55px 0px 0px 0px;
@@ -6054,94 +5985,11 @@ body.box-layout {
 }
 
 
-/* 2020.04.20 : auc-rm.jade */
+/* sj 2020.04.20 : hss-rm.jade */
 
 .auc-rm-cont{
 	margin: 20px 0px 0px 250px;
 }
-
-
-/* 2020.05.13 : ucms-detail.jade */
-.ucms-stat-panel{
-	border: 2px outset rgba(25,189,158);
-	margin: 10px 10px 10px 10px;
-	height: 50px;
-	box-shadow: 0 2px 5px 0 rgba(25,189,158, 0.26),
-		0 2px 10px 0 rgba(25,189,158,0.22);
-}
-
-.ucms-stat-txt{
-	font-size: 20px;
-	font-weight: 700;
-	text-align: center;
-	padding: 10px;
-	color: rgba(25,189,158);
-}
-
-.ucms-container{
-	margin: 0px 0px 0px 80px;
-}
-
-.ucms-detail-header{
-	text-align: center;
-}
-
-.ucms-detail-panel{
-	margin: 10px 0px 20px 70px;
-}
-.ucms-detail-ttl{
-	font-size: 60px;
-	font-weight: 700;
-	text-align: center;
-	margin: 55px 0px 0px 0px;
-}
-.ucms-detail-txt{
-	font-size: 30px;
-	font-weight: 700;
-	text-align: center;
-	color: rgba(25,189,158);
-}
-
-.ucms-stat-ttl{
-	font-size: 60px;
-	font-weight: 700;
-}
-.ucms-stat-txt{
-	font-size: 20px;
-	font-weight: 700;
-	text-align: center;
-	padding: 10px;
-	color: rgba(25,189,158);
-}
-
-.ucms-chart{
-	width: 30px;
-	height: 30px;
-}
-
-.ucms-txt-delimiter {
-	font-size: 20px;
-}
-
-.ucms-rm{
-	text-align: center;
-	cursor:pointer;
-}
-
-
-/* 2020.04.20 : auc-rm.jade */
-
-.ucms-rm-cont{
-	margin: 20px 0px 0px 250px;
-}
-
-.sys-txt-value-hlr {
-	font-size: 15px;
-	font-weight: 700;
-	text-align: center;
-}
-
-/*-------------------------sj 2020.05.21 end ---------------------------*/
 
 /* th 2020.05.13 : mme-list.jade */
 
@@ -6312,3 +6160,5 @@ body.box-layout {
 	padding: 10px;
 	color: rgba(25,189,158);
 }
+
+

@@ -985,7 +985,7 @@ block content
             .col-xs-11#5G_sysgrp
               .col-xs-4#LTE_MEC.sys-container 
                 .col-xs-6#LTE_MEC_stat
-                  .skt-sys-ttl NSA
+                  .skt-sys-ttl MEC-GW
                   span#curMECCntContainer 25
                   span.sys-txt-delimiter &nbsp/&nbsp
                   span#totMECCntContainer 25
@@ -999,7 +999,7 @@ block content
                   canvas#doughnut-chart5.sysPIE-chart    
               .col-xs-4#5G_AMF.sys-container
                 .col-xs-6#5G_AMF_stat
-                  .skt-sys-ttl SA
+                  .skt-sys-ttl MEP
                   span#curAMFCntContainer 12
                   span.sys-txt-delimiter &nbsp/&nbsp
                   span#totAMFCntContainer 12
@@ -1013,7 +1013,7 @@ block content
                   canvas#doughnut-chart1.sysPIE-chart      
               .col-xs-4#5G_SMF.sys-container
                 .col-xs-6#5G_SMF_stat
-                  .skt-sys-ttl MEC
+                  .skt-sys-ttl ME App
                   span#curSMFCntContainer 21
                   span.sys-txt-delimiter &nbsp/&nbsp
                   span#totSMFCntContainer 21
@@ -1031,11 +1031,11 @@ block content
               .skt-sysgrp-ttl-eng LTE
             .col-xs-11#LTE_sysgrp
               .col-xs-4#LTE_MME.sys-container.a(onclick='location.href="/mme-list"') 
-                .col-xs-6#LTE_MME_stat
+                .col-xs-6#LTE_MME_stat.sysgroup-click 
                   .skt-sys-ttl MME
-                  span#curMMECntContainer 
+                  span#curMMECntContainer
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totMMECntContainer 
+                  span#totMMECntContainer
                   span.sys-txt-delimiter 식
                   p.sys-txt-delimiter 
                   span#curMMESesContainer 785
@@ -1045,7 +1045,7 @@ block content
                 .col-xs-6#LTE_MME_pie
                   canvas#doughnut-chart3.sysPIE-chart          
               .col-xs-4#LTE_SGW.sys-container.a(onclick='location.href="/sgw-list"') 
-                .col-xs-6#LTE_SGW_stat
+                .col-xs-6#LTE_SGW_stat.sysgroup-click 
                   .skt-sys-ttl SGW
                   span#curSGWCntContainer 23
                   span.sys-txt-delimiter &nbsp/&nbsp
@@ -1092,81 +1092,81 @@ block content
                   span.sys-txt-delimiter 만
                 .col-xs-6#IMS_MSS_pie
                   canvas#doughnut-chart6.sysPIE-chart         
-              .col-xs-4#TAS.sys-container.a(onclick='location.href="/tas-list"') 
+              .col-xs-4#IMS_TAS.sys-container 
                 .col-xs-6#IMS_TAS_stat
                   .skt-sys-ttl TAS
-                  span#curTASCntContainer 
+                  span#curTASCntContainer 10
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totTASCntContainer 
+                  span#totTASCntContainer 10
                   span.sys-txt-delimiter 식
                   p.sys-txt-delimiter 
-                  span#curTASSesContainer 
+                  span#curTASSesContainer 785
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totTASSesContainer 
+                  span#totTASSesContainer 800
                   span.sys-txt-delimiter 만
                 .col-xs-6#IMS_TAS_pie
-                  canvas#doughnut-chart-tas.sysPIE-chart  
-              .col-xs-4#HSS.sys-container.a(onclick='location.href="/hss-list"')
-                .col-xs-6#IMS_HSS_stat.sysgroup-click
+                  canvas#doughnut-chart7.sysPIE-chart  
+              .col-xs-4#LTE_IBCF.sys-container.a(onclick='location.href="/hss-list"')
+                .col-xs-6#LTE_IBCF_stat.sysgroup-click
                   .skt-sys-ttl HSS
-                  span#curHSSCntContainer
+                  span#curIBCFCntContainer 10
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totHSSCntContainer
+                  span#totIBCFCntContainer 10
                   span.sys-txt-delimiter 식
                   p.sys-txt-delimiter 
-                  span#curHSSTpsContainer
+                  span#curIBCFSesContainer 846
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totHSSTpsContainer
-                  span.sys-txt-delimiter Tps
-                .col-xs-6#IMS_HSS_pie
-                  canvas#doughnut-chart-hss.sysPIE-chart             
+                  span#totIBCFSesContainer 900
+                  span.sys-txt-delimiter 만
+                .col-xs-6#LTE_IBCF_pie
+                  canvas#doughnut-chart8.sysPIE-chart             
                   
           .col-xs-12.sysGroup_table.align-middle
-            .col-xs-1#ATHN_title 
+            .col-xs-1#IMS_title 
               .skt-sysgrp-ttl-kr 인증
-            .col-xs-11#ATHN_sysgrp
-              .col-xs-4#HLR.sys-container.a(onclick='location.href="/hlr-list"')
-                .col-xs-6#ATHN_HLR_stat.sysgroup-click
+            .col-xs-11#IMS_sysgrp
+              .col-xs-4#IMS_MSS.sys-container.a(onclick='location.href="/hlr-list"')
+                .col-xs-6#HLR_stat.sysgroup-click
                   .skt-sys-ttl HLR
-                  span#curHLRCntContainer 
+                  span#curMSSCntContainer 10
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totHLRCntContainer 
+                  span#totMSSCntContainer 10
                   span.sys-txt-delimiter 식
                   p.sys-txt-delimiter 
-                  span#curHLRTpsContainer 
+                  span#curMSSSesContainer 785
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totHLRTpsContainer 
-                  span.sys-txt-delimiter
-                .col-xs-6#ATHN_HLR_pie
-                  canvas#doughnut-chart-hlr.sysPIE-chart         
-              .col-xs-4#AUC.sys-container.a(onclick='location.href="/auc-list"')
-                .col-xs-6#ATHN_AuC_stat.sysgroup-click
+                  span#totMSSSesContainer 800
+                  span.sys-txt-delimiter 만
+                .col-xs-6#IMS_MSS_pie
+                  canvas#doughnut-chart9.sysPIE-chart         
+              .col-xs-4#IMS_TAS.sys-container.a(onclick='location.href="/auc-list"')
+                .col-xs-6#IMS_TAS_stat.sysgroup-click
                   .skt-sys-ttl AUC
-                  span#curAuCCntContainer 
+                  span#curTASCntContainer 10
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totAuCCntContainer 
+                  span#totTASCntContainer 10
                   span.sys-txt-delimiter 식
                   p.sys-txt-delimiter 
-                  span#curAuCTpsContainer 
+                  span#curTASSesContainer 785
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totAuCTpsContainer 
-                  span.sys-txt-delimiter Tps
-                .col-xs-6#ATHN_AuC_pie
-                  canvas#doughnut-chart-auc.sysPIE-chart  
-              .col-xs-4#UCMS.sys-container.a(onclick='location.href="/ucms-detail"') 
-                .col-xs-6#ATHN_UCMS_stat.sysgroup-click
+                  span#totTASSesContainer 800
+                  span.sys-txt-delimiter 만
+                .col-xs-6#IMS_TAS_pie
+                  canvas#doughnut-chart10.sysPIE-chart  
+              .col-xs-4#LTE_IBCF.sys-container 
+                .col-xs-6#LTE_IBCF_stat
                   .skt-sys-ttl UCMS
-                  span#curUCMSCntContainer 
+                  span#curIBCFCntContainer 25
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totUCMSCntContainer 
+                  span#totIBCFCntContainer 25
                   span.sys-txt-delimiter 식
                   p.sys-txt-delimiter 
-                  span#curUCMSTpsContainer 
+                  span#curIBCFSesContainer 846
                   span.sys-txt-delimiter &nbsp/&nbsp
-                  span#totUCMSTpsContainer 
-                  span.sys-txt-delimiter Tps
-                .col-xs-6#ATHN_UCMS_pie
-                  canvas#doughnut-chart-ucms.sysPIE-chart      
+                  span#totIBCFSesContainer 900
+                  span.sys-txt-delimiter 만
+                .col-xs-6#LTE_IBCF_pie
+                  canvas#doughnut-chart11.sysPIE-chart      
                   
                   
                   

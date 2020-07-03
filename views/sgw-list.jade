@@ -1,0 +1,229 @@
+extends layout
+
+block content
+   input(type="hidden", val="sgw")#inputCurrentSystem
+   .sgwList-container
+     .col-sm-5.skt-panel.legacy-sgw-panel
+       .col-sm-12.border-system-detail
+         .sys-detail-ttl SGW
+         span#curLSsgwcnt
+         span.sys-txt-delimiter &nbsp/&nbsp
+         span#totLSsgwcnt
+         span.sys-txt-delimiter 식
+         p.sys-txt-delimiter 
+         span#curLSsgwSess
+         span.sys-txt-delimiter &nbsp/&nbsp
+         span#totLSsgwSess
+         span.sys-txt-delimiter 만
+         p.sys-txt-delimiter 
+         span#curLSsgwBps
+         span.sys-txt-delimiter &nbsp/&nbsp
+         span#totLSsgwBps
+         span.sys-txt-delimiter Gbps
+         
+         
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-S.sys-detail-ttl         
+            span#curSysSesContainerS
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerS 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-S.sys-detail-ttl         
+            span#curSysSesContainerS
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerS 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-S.sys-detail-ttl         
+            span#curSysSesContainerS
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerS 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-S.sys-detail-ttl         
+            span#curSysSesContainerS
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerS 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl         
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL       
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl         
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-L.sys-detail-ttl         
+            span#curSysSesContainerL
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerL
+            
+            
+     .col-sm-5.skt-panel.virtual-sgw-panel
+       .col-sm-12.border-system-detail
+         .sys-detail-ttl vSGW
+         span#curVsgwcnt
+         span.sys-txt-delimiter &nbsp/&nbsp
+         span#totVsgwcnt
+         span.sys-txt-delimiter 식
+         p.sys-txt-delimiter 
+         span#curVsgwSess
+         span.sys-txt-delimiter &nbsp/&nbsp
+         span#totVsgwSess
+         span.sys-txt-delimiter 만
+         p.sys-txt-delimiter 
+         span#curVsgwBps
+         span.sys-txt-delimiter &nbsp/&nbsp
+         span#totVsgwBps
+         span.sys-txt-delimiter Gbps
+  
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV        
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV 
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV    
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV    
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV    
+       .col-sm-3.sys-detail-container
+         .sys-detail-box.align-middle
+            #system-name-V.sys-detail-ttl         
+            span#curSysSesContainerV
+            span.sys-detail-delimiter &nbsp/&nbsp
+            span#totSysSesContainerV    
+   
+   
+   
+   
+   
+
+
+
+          
+       
+block javascripts
+  script(src="/js/flot/jquery.flot.time.js")
+  script(src="/js/twinkle/jquery.twinkle-0.9.0.min.js")
+  script(src="/js/skt/sgw-list.js")
+
+       
+    

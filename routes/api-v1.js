@@ -30,6 +30,53 @@ function getDateTime(){
     return "'"+year + "-" + month + "-" + day+ " " + hour + ":" + min+":"+sec+"'";
 }
 
+function getPrevDate(){
+	let PrevTime = new Date();
+	PrevTime.setMinutes(PrevTime.getMinutes()-5);
+	
+	let day = (PrevTime.getDate()<10? '0' : '')+PrevTime.getDate();
+	let month = ((PrevTime.getMonth()+ 1)<10? '0':'')+(PrevTime.getMonth()+1);
+	let year = PrevTime.getFullYear();
+	
+	return (year + "-" + month + "-" + day);
+}
+
+
+function getPrevTime(){
+	let PrevTime = new Date();
+	PrevTime.setMinutes(PrevTime.getMinutes()-5);
+	
+	let hours = (PrevTime.getHours()<10? '0' : '')+PrevTime.getHours();
+	let minutes = (PrevTime.getMinutes()<10? '0' : '')+PrevTime.getMinutes();
+	let seconds = (PrevTime.getSeconds()<10? '0' : '')+PrevTime.getSeconds();
+	
+	return (hours + ":" + minutes + ":" + seconds);
+}
+
+function getPrev10mDate(){
+	let PrevTime = new Date();
+	PrevTime.setMinutes(PrevTime.getMinutes()-10);
+	
+	let day = (PrevTime.getDate()<10? '0' : '')+PrevTime.getDate();
+	let month = ((PrevTime.getMonth()+ 1)<10? '0':'')+(PrevTime.getMonth()+1);
+	let year = PrevTime.getFullYear();
+	
+	return (year + "-" + month + "-" + day);
+}
+
+
+function getPrev10mTime(){
+	let PrevTime = new Date();
+	PrevTime.setMinutes(PrevTime.getMinutes()-10);
+	
+	let hours = (PrevTime.getHours()<10? '0' : '')+PrevTime.getHours();
+	let minutes = (PrevTime.getMinutes()<10? '0' : '')+PrevTime.getMinutes();
+	let seconds = (PrevTime.getSeconds()<10? '0' : '')+PrevTime.getSeconds();
+	
+	return (hours + ":" + minutes + ":" + seconds);
+}
+
+
 function getQueryInUppercase(query) {
   return "'" + String(query).toUpperCase() + "'";
 }
@@ -944,6 +991,285 @@ router.get('/v1/alarms', function(req, res, next) {
 	  });
 });
 
+
+//미수집 장비 조회
+router.get('/v1/Uncollected', function(req, res, next) {
+	var result;
+    var result_code = 1;
+    var result_msg = "success";
+    
+    async.parallel([
+		//fallback(0) PGW
+		function(callback){
+			  var system_name_PGW = [];
+			  var system_type_PGW = [];
+			  var location_PGW = [];
+			  var building_PGW = [];
+			  var floor_PGW = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%PGW%\' and system_name not in (select distinct system_name from pgw_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_PGW.push(e.system_name);
+			      			system_type_PGW.push(e.system_type);
+			      			location_PGW.push(e.location);
+			      			building_PGW.push(e.building);
+							floor_PGW.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_PGW : system_name_PGW,	
+			      				system_type_PGW: system_type_PGW,
+			      				location_PGW : location_PGW,
+			      				building_PGW: building_PGW,
+								floor_PGW: floor_PGW
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+		  //fallback(1) TAS
+		  function(callback){
+			  var system_name_TAS = [];
+			  var system_type_TAS = [];
+			  var location_TAS = [];
+			  var building_TAS = [];
+			  var floor_TAS = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%TAS%\' and system_name not in (select distinct system_name from tas_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_TAS.push(e.system_name);
+			      			system_type_TAS.push(e.system_type);
+			      			location_TAS.push(e.location);
+			      			building_TAS.push(e.building);
+							floor_TAS.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_TAS : system_name_TAS,	
+			      				system_type_TAS: system_type_TAS,
+			      				location_TAS : location_TAS,
+			      				building_TAS: building_TAS,
+								floor_TAS: floor_TAS
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+		//fallback(2), HSS 정보 전송
+		  function(callback){
+			  var system_name_HSS = [];
+			  var system_type_HSS = [];
+			  var location_HSS = [];
+			  var building_HSS = [];
+			  var floor_HSS = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%HSS%\' and system_name not in (select distinct system_name from hss_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_HSS.push(e.system_name);
+			      			system_type_HSS.push(e.system_type);
+			      			location_HSS.push(e.location);
+			      			building_HSS.push(e.building);
+							floor_HSS.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_HSS : system_name_HSS,	
+			      				system_type_HSS: system_type_HSS,
+			      				location_HSS : location_HSS,
+			      				building_HSS: building_HSS,
+								floor_HSS: floor_HSS
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+		//fallback(3), HLR 정보 전송
+		  function(callback){
+			  var system_name_HLR = [];
+			  var system_type_HLR = [];
+			  var location_HLR = [];
+			  var building_HLR = [];
+			  var floor_HLR = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%HLR%\' and system_name not in (select distinct system_name from hlr_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_HLR.push(e.system_name);
+			      			system_type_HLR.push(e.system_type);
+			      			location_HLR.push(e.location);
+			      			building_HLR.push(e.building);
+							floor_HLR.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_HLR : system_name_HLR,	
+			      				system_type_HLR: system_type_HLR,
+			      				location_HLR : location_HLR,
+			      				building_HLR: building_HLR,
+								floor_HLR: floor_HLR
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+		//fallback(4), AuC 정보 전송
+		  function(callback){
+			  var system_name_AUC = [];
+			  var system_type_AUC = [];
+			  var location_AUC = [];
+			  var building_AUC = [];
+			  var floor_AUC = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%AUC%\' and system_name not in (select distinct system_name from auc_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_AUC.push(e.system_name);
+			      			system_type_AUC.push(e.system_type);
+			      			location_AUC.push(e.location);
+			      			building_AUC.push(e.building);
+							floor_AUC.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_AUC : system_name_AUC,	
+			      				system_type_AUC: system_type_AUC,
+			      				location_AUC : location_AUC,
+			      				building_AUC: building_AUC,
+								floor_AUC: floor_AUC
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+
+		//fallback(5), MME 정보 전송
+		  function(callback){
+			  var system_name_MME = [];
+			  var system_type_MME = [];
+			  var location_MME = [];
+			  var building_MME = [];
+			  var floor_MME = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%MME%\' and system_name not in (select distinct system_name from mme_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_MME.push(e.system_name);
+			      			system_type_MME.push(e.system_type);
+			      			location_MME.push(e.location);
+			      			building_MME.push(e.building);
+							floor_MME.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_MME : system_name_MME,	
+			      				system_type_MME: system_type_MME,
+			      				location_MME : location_MME,
+			      				building_MME: building_MME,
+								floor_MME: floor_MME
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+
+		//fallback(6), SGW 정보 전송
+		  function(callback){
+			  var system_name_SGW = [];
+			  var system_type_SGW = [];
+			  var location_SGW = [];
+			  var building_SGW = [];
+			  var floor_SGW = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%SGW%\' and system_name not in (select distinct system_name from sgw_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_SGW.push(e.system_name);
+			      			system_type_SGW.push(e.system_type);
+			      			location_SGW.push(e.location);
+			      			building_SGW.push(e.building);
+							floor_SGW.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_SGW : system_name_SGW,	
+			      				system_type_SGW: system_type_SGW,
+			      				location_SGW : location_SGW,
+			      				building_SGW: building_SGW,
+								floor_SGW: floor_SGW
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+
+		//fallback(7), UCMS 정보 전송
+		  function(callback){
+			  var system_name_UCMS = [];
+			  var system_type_UCMS = [];
+			  var location_UCMS = [];
+			  var building_UCMS = [];
+			  var floor_UCMS = [];
+				
+				
+			  mysqlDB.query('select system_name, system_type, location, building, floor_plan from system_info_total where system_name like \'%UCMS%\' and system_name not in (select distinct system_name from ucms_stat_list where date >= \''+ getPrev10mDate() + '\' and time >= \''+ getPrev10mTime() + '\' )',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name_UCMS.push(e.system_name);
+			      			system_type_UCMS.push(e.system_type);
+			      			location_UCMS.push(e.location);
+			      			building_UCMS.push(e.building);
+							floor_UCMS.push(e.floor_plan);
+			      		});
+			      		var json = {
+			      				system_name_UCMS : system_name_UCMS,	
+			      				system_type_UCMS: system_type_UCMS,
+			      				location_UCMS : location_UCMS,
+			      				building_UCMS: building_UCMS,
+								floor_UCMS: floor_UCMS
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  }
+		 ],
+	  function(err,results){
+	    if(err)console.log(err);
+	    var result = {
+	      result_code: result_code,
+	      result_msg: result_msg,
+	      result:results
+	    };
+	    res.send(JSON.stringify(result));
+	});
+});
+
 //임계치에 해당하는 통계 data를 alarm_list table에 insert하는 logic
 router.get('/v1/stats', function(req, res, next) {
     var result;
@@ -976,7 +1302,7 @@ router.get('/v1/stats', function(req, res, next) {
     		  
     		   
 			
-			  mysqlDB.query('select pgw_stat_list.system_name, system_info_pgw.system_type, pgw_stat_list.date, pgw_stat_list.time, pgw_stat_list.type, pgw_stat_list.succ_rate, pgw_stat_list.att from pgw_stat_list, system_info_pgw where pgw_stat_list.system_name = system_info_pgw.system_name and pgw_stat_list.stat_mask=\'N\' limit 200;',
+			  mysqlDB.query('select pgw_stat_list.system_name, system_info_pgw.system_type, pgw_stat_list.date, pgw_stat_list.time, pgw_stat_list.type, pgw_stat_list.succ_rate, pgw_stat_list.att from pgw_stat_list, system_info_pgw where pgw_stat_list.system_name = system_info_pgw.system_name and pgw_stat_list.stat_mask=\'N\'and pgw_stat_list.date >= \''+ getPrevDate() + '\' and pgw_stat_list.time >= \''+ getPrevTime() + '\';',
 					  function(error, results, fields) {
 					  	if (error) {
 				      		console.log(error);
@@ -1293,6 +1619,330 @@ router.get('/v1/stats', function(req, res, next) {
 				      	}
 					  	callback(null,system_name);
 				  });
+				
+		
+			  	/* sj(06/22)
+				mysqlDB.query('select hss_stat_list.system_name, system_info_hss.system_type, hss_stat_list.date, hss_stat_list.time, hss_stat_list.type, hss_stat_list.succ_rate, hss_stat_list.att from hss_stat_list, system_info_hss where hss_stat_list.system_name = system_info_hss.system_name and hss_stat_list.stat_mask=\'N\' limit 200;',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system_name.push(e.system_name);
+				      			system_type.push(e.system_type);
+				      			date.push(e.date);
+				      			time.push(e.time);
+				      			type.push(e.type);
+				      			succ_rate.push(e.succ_rate);
+				      			att.push(e.att);
+				      		});
+				      		mysqlDB.query('select system, th0, th1, th2, th3, th4, th5, th6, th7 from threshold_list where system like \'%PGW\';',
+									  function(error, results, fields) {
+									  	if (error) {
+								      		console.log(error);
+								      	} else {
+								      		results.forEach(function(e) {
+								      			system.push(e.system);
+								      			th0.push(e.th0);
+								      			th1.push(e.th1);
+								      			th2.push(e.th2);
+								      			th3.push(e.th3);
+								      			th4.push(e.th4);
+								      			th5.push(e.th5);
+								      			th6.push(e.th6);
+								      			th7.push(e.th7);
+								      			
+								      		    system.forEach(function(e,index){
+								      		    	if(system[index] == "DPGW"){
+								      		    		D_th0 = th0[index];
+								      		    		D_th1 = th1[index];
+								      		    		D_th2 = th2[index];
+								      		    		D_th3 = th3[index];
+								      		    		D_th4 = th4[index];
+								      		    		D_th5 = th5[index];
+								      		    		D_th6 = th6[index];
+								      		    		D_th7 = th7[index];
+								      		    	}
+								      		    	else if(system[index] == "HPGW"){
+								      		    		H_th0 = th0[index];
+								      		    		H_th1 = th1[index];
+								      		    		H_th2 = th2[index];
+								      		    		H_th3 = th3[index];
+								      		    		H_th4 = th4[index];
+								      		    		H_th5 = th5[index];
+								      		    		H_th6 = th6[index];
+								      		    		H_th7 = th7[index];
+								      		    	}
+								      		    });
+								      		});
+							      			var sql_insert = 'INSERT INTO alarm_list VALUE (?,?,?,?,?,?,?,\'N\');'
+							      			var sql_update = 'UPDATE pgw_stat_list SET stat_mask=\'Y\' WHERE date=? and time=? and system_name=? and type=? and succ_rate=? and att=?'
+							      			
+							      			
+							      			system_name.forEach(function(e,index) {
+							      				if(system_type[index] == "D"){
+							      					switch(type[index]){
+														case "DNS" : 
+															if(Number(succ_rate[index]) < Number(D_th0) && Number(att[index]) > Number(D_th4)){
+										        				  var params = [date[index], time[index], system_name[index], system_name[index]+"/"+type[index], "STAT", "DNS","Success Rate : "+succ_rate[index]];
+								  	       	         			  mysqlDB.query(sql_insert, params,
+								  	       	         				 function(error, results, fields) {
+												        	    		if (error) {
+												        	    			console.log(error);
+												        	    		} else {
+												        	    			var params = [date[index], time[index], system_name[index], type[index], succ_rate[index], att[index]];
+												        	    			mysqlDB.query(sql_update, params,
+												        	    					function(error, results, fields){
+														        	    				if (error) {
+																        	    			console.log(error);
+																        	    		} else {
+																        	    			console.log("DNS 성공");
+																        	    		}
+												        	    			});
+												        	    		}
+											        			     });
+															}													
+															break;
+														case "CSR" : 
+															if(Number(succ_rate[index]) < Number(D_th1) && Number(att[index]) > Number(D_th5)){
+																var params = [date[index], time[index], system_name[index], system_name[index]+"/"+type[index], "STAT", "CSR","Success Rate : "+succ_rate[index]];
+								  	       	         			  mysqlDB.query(sql_insert, params,
+								  	       	         				 function(error, results, fields) {
+												        	    		if (error) {
+												        	    			console.log(error);
+												        	    		} else {
+												        	    			var params = [date[index], time[index], system_name[index], type[index], succ_rate[index], att[index]];
+												        	    			mysqlDB.query(sql_update, params,
+												        	    					function(error, results, fields){
+														        	    				if (error) {
+																        	    			console.log(error);
+																        	    		} else {
+																        	    			console.log("CSR 성공");
+																        	    		}
+												        	    			});
+												        	    		}
+											        			     });
+															}
+															break;
+														case "MBR" : 
+															if(Number(succ_rate[index]) < Number(D_th2) && Number(att[index]) > Number(D_th6)){
+																var params = [date[index], time[index], system_name[index], system_name[index]+"/"+type[index], "STAT", "MBR","Success Rate : "+succ_rate[index]];
+								  	       	         			  mysqlDB.query(sql_insert, params,
+								  	       	         				 function(error, results, fields) {
+												        	    		if (error) {
+												        	    			console.log(error);
+												        	    		} else {
+												        	    			var params = [date[index], time[index], system_name[index], type[index], succ_rate[index], att[index]];
+												        	    			mysqlDB.query(sql_update, params,
+												        	    					function(error, results, fields){
+														        	    				if (error) {
+																        	    			console.log(error);
+																        	    		} else {
+																        	    			console.log("MBR 성공");
+																        	    		}
+												        	    			});
+												        	    		}
+											        			     });
+															}
+															break;
+														case "OCS" : //OCS 
+															if(Number(succ_rate[index]) < Number(D_th3) && Number(att[index]) > Number(D_th7)){
+																var params = [date[index], time[index], system_name[index], system_name[index]+"/"+type[index], "STAT", "OCS","Success Rate : "+succ_rate[index]];
+								  	       	         			  mysqlDB.query(sql_insert, params,
+								  	       	         				 function(error, results, fields) {
+												        	    		if (error) {
+												        	    			console.log(error);
+												        	    		} else {
+												        	    			var params = [date[index], time[index], system_name[index], type[index], succ_rate[index], att[index]];
+												        	    			mysqlDB.query(sql_update, params,
+												        	    					function(error, results, fields){
+														        	    				if (error) {
+																        	    			console.log(error);
+																        	    		} else {
+																        	    			console.log("OCS 성공");
+																        	    		}
+												        	    			});
+												        	    		}
+											        			     });
+															}
+															break;
+													}
+												}
+												if(system_type[index] == "H"){
+													// HDV PGW 로직 설정
+													switch(type[index]){
+														case "CSR" : 
+															if(Number(succ_rate[index]) < Number(D_th1) && Number(att[index]) > Number(D_th5)){
+																var params = [date[index], time[index], system_name[index], system_name[index]+"/"+type[index], "STAT", "CSR","Success Rate : "+succ_rate[index]];
+								  	       	         			  mysqlDB.query(sql_insert, params,
+								  	       	         				 function(error, results, fields) {
+												        	    		if (error) {
+												        	    			console.log(error);
+												        	    		} else {
+												        	    			var params = [date[index], time[index], system_name[index], type[index], succ_rate[index], att[index]];
+												        	    			mysqlDB.query(sql_update, params,
+												        	    					function(error, results, fields){
+														        	    				if (error) {
+																        	    			console.log(error);
+																        	    		} else {
+																        	    			console.log("CSR 성공");
+																        	    		}
+												        	    			});
+												        	    		}
+											        			     });
+															}
+															break;
+														case "MBR" : 
+															if(Number(succ_rate[index]) < Number(D_th2) && Number(att[index]) > Number(D_th6)){
+																var params = [date[index], time[index], system_name[index], system_name[index]+"/"+type[index], "STAT", "MBR","Success Rate : "+succ_rate[index]];
+								  	       	         			  mysqlDB.query(sql_insert, params,
+								  	       	         				 function(error, results, fields) {
+												        	    		if (error) {
+												        	    			console.log(error);
+												        	    		} else {
+												        	    			var params = [date[index], time[index], system_name[index], type[index], succ_rate[index], att[index]];
+												        	    			mysqlDB.query(sql_update, params,
+												        	    					function(error, results, fields){
+														        	    				if (error) {
+																        	    			console.log(error);
+																        	    		} else {
+																        	    			console.log("MBR 성공");
+																        	    		}
+												        	    			});
+												        	    		}
+											        			     });
+															}
+															break;
+													}
+												}
+							      			});
+								      		//callback(null,json);
+							      			//통계 Clear logic 
+							      			var sql_search_stat = 'select alarm_list.date,alarm_list.time,alarm_list.system_name,system_info_pgw.system_type, alarm_code, alarm_type from alarm_list, system_info_pgw where alarm_list.system_name = system_info_pgw.system_name and alarm_mask=\'N\' and alarm_type=\'STAT\';';
+							      			var sql_clear = 'UPDATE alarm_list SET alarm_mask=\'Y\' where date=? and time=? and system_name=? and alarm_code=?';
+							      					
+							      			mysqlDB.query(sql_search_stat,
+							      					function(error, results, fields){
+							      						if(results != ""){
+							      							console.log(results);
+							      							results.forEach(function(e) {
+							      								clear_sysname.push(e.system_name);
+							      								clear_date.push(e.date);
+							      								clear_time.push(e.time);
+							      								clear_systype.push(e.system_type);
+							      								clear_almcode.push(e.alarm_code);
+							      								clear_almtype.push(e.alarm_type);
+							      							});
+							      							
+							      							clear_sysname.forEach(function(e,index_c) {
+							      								system_name.forEach(function(e,index_s){
+							      									if(clear_sysname[index_c] == system_name[index_s] && clear_date[index_c] <= date[index_s] && clear_time[index_c] <= time[index_s]){
+							      										if(clear_systype[index_c] =='D'){
+													      					switch(clear_almcode[index_c]){
+																				case "DNS" : 
+																					if(Number(succ_rate[index_s]) > Number(D_th0) && Number(att[index_s]) > Number(D_th4)){
+																						  var params = [clear_date[index_c], clear_time[index_c], clear_sysname[index_c], clear_almcode[index_c]];
+														  	       	         			  mysqlDB.query(sql_clear, params,
+														  	       	         				 function(error, results, fields) {
+																		        	    		if (error) {
+																		        	    			console.log(error);
+																		        	    		} else {
+																		        	    			console.log("Clear 성공");
+																		        	    		}
+																	        			     });
+																					}
+																					break;
+																				case "CSR" : 
+																					if(Number(succ_rate[index_s]) > Number(D_th1) && Number(att[index_s]) > Number(D_th5)){
+																						var params = [clear_date[index_c], clear_time[index_c], clear_sysname[index_c], clear_almcode[index_c]];
+														  	       	         			  mysqlDB.query(sql_clear, params,
+														  	       	         				 function(error, results, fields) {
+																		        	    		if (error) {
+																		        	    			console.log(error);
+																		        	    		} else {
+																		        	    			console.log("Clear 성공");
+																		        	    		}
+																	        			     });
+																					}
+																					break;
+																				case "MBR" : 
+																					if(Number(succ_rate[index_s]) > Number(D_th2) && Number(att[index_s]) > Number(D_th6)){
+																						var params = [clear_date[index_c], clear_time[index_c], clear_sysname[index_c], clear_almcode[index_c]];
+														  	       	         			  mysqlDB.query(sql_clear, params,
+														  	       	         				 function(error, results, fields) {
+																		        	    		if (error) {
+																		        	    			console.log(error);
+																		        	    		} else {
+																		        	    			console.log("Clear 성공");
+																		        	    		}
+																	        			     });
+																					}
+																					break;
+																				case "OCS" : //OCS 
+																					if(Number(succ_rate[index_s]) > Number(D_th3) && Number(att[index_s]) > Number(D_th7)){
+																						var params = [clear_date[index_c], clear_time[index_c], clear_sysname[index_c], clear_almcode[index_c]];
+														  	       	         			  mysqlDB.query(sql_clear, params,
+														  	       	         				 function(error, results, fields) {
+																		        	    		if (error) {
+																		        	    			console.log(error);
+																		        	    		} else {
+																		        	    			console.log("Clear 성공");
+																		        	    		}
+																	        			     });
+																					}
+																					break;
+																			}
+							      										}
+							      										if(clear_systype[index_c] == "H"){
+																			// HDV PGW 로직 설정
+							      											switch(clear_almcode[index_c]){
+																				case "CSR" : 
+																					if(Number(succ_rate[index_s]) > Number(D_th1) && Number(att[index_s]) > Number(D_th5)){
+																						var params = [clear_date[index_c], clear_time[index_c], clear_sysname[index_c], clear_almcode[index_c]];
+														  	       	         			  mysqlDB.query(sql_clear, params,
+														  	       	         				 function(error, results, fields) {
+																		        	    		if (error) {
+																		        	    			console.log(error);
+																		        	    		} else {
+																		        	    			console.log("Clear 성공");
+																		        	    		}
+																	        			     });
+																					}
+																					break;
+																				case "MBR" : 
+																					if(Number(succ_rate[index_s]) > Number(D_th2) && Number(att[index_s]) > Number(D_th6)){
+																						var params = [clear_date[index_c], clear_time[index_c], clear_sysname[index_c], clear_almcode[index_c]];
+														  	       	         			  mysqlDB.query(sql_clear, params,
+														  	       	         				 function(error, results, fields) {
+																		        	    		if (error) {
+																		        	    			console.log(error);
+																		        	    		} else {
+																		        	    			console.log("Clear 성공");
+																		        	    		}
+																	        			     });
+																					}
+																					break;
+																			}
+																		}
+																	}
+																	
+							      								})
+											      				
+											      			});
+							      					}else{
+							      						//alarm_list 테이블에 값 없을 시(통계로인한 장애 상황이 아닐 시)
+							      					}
+							      			})
+								      	}
+									  	
+							});
+				      	}
+					  	callback(null,system_name);
+				  });
+				 */
+		
+		
+		
 
 		}
 	],
@@ -1325,7 +1975,7 @@ router.get('/v1/5Gsystem', function(req, res, next) {
 
 			  var cnt=0;
 			  
-			  mysqlDB.query('select count(*) as cnt, (select sum(max_session) from system_info_pgw) as totSess, (select sum(current_session)  from system_info_pgw where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask=\'N\')) as curSess, (select count(*) from system_info_pgw  where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask=\'N\')) as curCnt from system_info_pgw',
+			  mysqlDB.query('select count(*) as cnt, (select sum(max_session) from system_info_pgw) as totSess, (select sum(current_session) from system_info_pgw where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask=\'N\')) as curSess, (select count(*) from system_info_pgw  where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask=\'N\')) as curCnt from system_info_pgw',
 					  function(error, results, fields) {
 					  	if (error) {
 				      		console.log(error);
@@ -3391,5 +4041,676 @@ router.get('/v1/ucms-detail', function(req, res, next) {
 	  });	
 });
 /* ---------------------------------------sj 2020.05.18~ end-----------------------------------*/
+
+/*---taehyen------*/
+router.get('/v1/mme-list', function(req, res, next) {
+	  /* API Send body */
+		  var result_code = 1;
+		  var result_msg = "success";
+		  
+		  async.parallel([
+			  function(callback){
+				  var system_name = [];
+				  var system_type = [];
+				  var curSub = [];
+				  var totSub = [];
+				  mysqlDB.query('select system_name, system_type, current_subscriber, max_subscriber from system_info_mme;',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system_name.push(e.system_name);
+				      			system_type.push(e.system_type);
+				      			curSub.push(Math.round(e.current_subscriber));
+				      			totSub.push(Math.round(e.max_subscriber));
+				      		});
+				      		var json = {
+				      			system_name : system_name,
+				      			system_type : system_type,
+				      			curSub : curSub,
+				      			totSub : totSub
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+			  },
+			  // mme 요약 정보 전송
+			  function(callback){
+				  var curCenterCnt = [];
+				  var totCenterCnt = [];
+				  var curCenterSub = [];
+				  var totCenterSub = [];
+				  
+				  mysqlDB.query('select (select count(system_name) from system_info_mme where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\') and system_type=' + '"C"'+ ') as curmCnt, ' +
+						  		'count(system_name) as totmCnt, '+
+						        'sum(current_subscriber) as curmSub, ' +
+						        '(select sum(max_subscriber) from system_info_mme where system_type=' + '"C"'+ ') as totmSub ' +
+						        'from system_info_mme where system_type=' + '"C"',
+						  function(error, results, fields) {
+						  	if (error) {
+					      		console.log(error);
+					      	} else {
+					      		results.forEach(function(e) {
+					      			curCenterCnt.push(e.curmCnt);
+					      			totCenterCnt.push(e.totmCnt);
+					      			curCenterSub.push(e.curmSub);
+					      			totCenterSub.push(e.totmSub);
+					      		});
+					      		var json = {
+					      			curCenterCnt : curCenterCnt,
+					      			totCenterCnt : totCenterCnt,
+					      			curCenterSub : curCenterSub,
+					      			totCenterSub : totCenterSub
+					      		};
+					      		callback(null,json);
+					      	};
+					  });
+			  },
+			  // 장애 SYSTEM Animation 표시
+			  function(callback){
+				  var system_name = [];
+
+				  mysqlDB.query('select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\' and system_name LIKE ' + '"%MME%"',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system_name.push(e.system_name);
+				      		});
+				      		var json = {
+				      			system_name : system_name,
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+			  },
+			  // mme 요약 정보 전송
+			  function(callback){
+				  var curEastCnt = [];
+				  var totEastCnt = [];
+				  var curEastSub = [];
+				  var totEastSub = [];
+				  
+				  mysqlDB.query('select (select count(system_name) from system_info_mme where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\') and system_type=' + '"E"'+ ') as curemCnt, ' +
+						  		'count(system_name) as totemCnt, '+
+						        'sum(current_subscriber) as curemSub, ' +
+						        '(select sum(max_subscriber) from system_info_mme where system_type=' + '"E"'+ ') as totemSub ' +
+						        'from system_info_mme where system_type=' + '"E"',
+						  function(error, results, fields) {
+						  	if (error) {
+					      		console.log(error);
+					      	} else {
+					      		results.forEach(function(e) {
+					      			curEastCnt.push(e.curemCnt);
+					      			totEastCnt.push(e.totemCnt);
+					      			curEastSub.push(e.curemSub);
+					      			totEastSub.push(e.totemSub);
+					      		});
+					      		var json = {
+					      			curEastCnt : curEastCnt,
+					      			totEastCnt : totEastCnt,
+					      			curEastSub : curEastSub,
+					      			totEastSub : totEastSub
+					      		};
+					      		callback(null,json);
+					      	};
+					  });
+			  },
+		  function(callback){
+			  var curngCnt = [];
+			  var totngCnt = [];
+			  var curngSub = [];
+			  var totngSub = [];
+			  
+			  mysqlDB.query('select (select count(system_name) from system_info_mme where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\') and system_type=' + '"G"'+ ') as curgmCnt, ' +
+					  		'count(system_name) as totgmCnt, '+
+					        'sum(current_subscriber) as curgmSub, ' +
+					        '(select sum(max_subscriber) from system_info_mme where system_type=' + '"G"'+ ') as totgmSub ' +
+					        'from system_info_mme where system_type=' + '"G"',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			curngCnt.push(e.curgmCnt);
+				      			totngCnt.push(e.totgmCnt);
+				      			curngSub.push(e.curgmSub);
+				      			totngSub.push(e.totgmSub);
+		
+				      		});
+				      		var json = {
+				      			curngCnt : curngCnt,
+				      			totngCnt : totngCnt,
+				      			curngSub : curngSub,
+				      			totngSub : totngSub
+				      		};
+				      		callback(null,json);
+				      	};
+				  });
+		  },	  
+		],
+		
+		function(err,results){
+		    if(err)console.log(err);
+		    var result = {
+		      result_code: result_code,
+		      result_msg: result_msg,
+		      result:results
+		    };
+		    res.send(JSON.stringify(result));
+		  });
+		  
+});
+
+router.get('/v1/mme-list/:number', function(req, res, next) {
+	  /* API Send body */
+	  var result_code = 1;
+	  var result_msg = "success";
+	  
+	  async.parallel([ 
+		  function(callback){
+			  var system_name = [];
+			  var building = [];
+			  var floor_plan = [];
+			  var curSub = [];
+			  var totSub = [];
+			  mysqlDB.query('select system_name, building, floor_plan, current_subscriber, max_subscriber from system_info_mme;',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name.push(e.system_name);
+			      			building.push(e.building);
+			      			floor_plan.push(e.floor_plan);
+			      			curSub.push((e.current_subscriber));
+			      			totSub.push((e.max_subscriber));
+			      		});
+			      		var json = {
+			      			system_name : system_name,
+			      			building : building,
+			      			floor_plan : floor_plan,
+			      			curSub : curSub,
+			      			totSub : totSub
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+		  },
+		  function(callback){ 
+			  var system_name = [];
+			  var system_type = [];
+			  var date = [];
+			  var time = [];
+			  var type = [];
+			  var succ_rate = [];
+			  var vendor = [];
+			  mysqlDB.query('select mme_stat_list.system_name, system_info_mme.system_type, mme_stat_list.date, mme_stat_list.time, mme_stat_list.type, mme_stat_list.succ_rate, system_info_mme.vendor from mme_stat_list, system_info_mme where mme_stat_list.system_name = system_info_mme.system_name;',
+				  function(error, results, fields) {
+				  	if (error) {
+			      		console.log(error);
+			      	} else {
+			      		results.forEach(function(e) {
+			      			system_name.push(e.system_name);
+			      			system_type.push(e.system_type);
+			      			date.push(e.date);
+			      			time.push(e.time);
+			      			type.push(e.type);
+			      			succ_rate.push(Number(e.succ_rate));
+			      			vendor.push(e.vendor);
+			      		});
+			      		var json = {
+			      			system_name : system_name,
+			      			system_type : system_type,
+			      			date : date,
+			      			time : time,
+			      			type : type,
+			      			succ_rate : succ_rate,
+			      			vendor : vendor
+			      		}
+			      		callback(null,json);
+			      	}
+			  });
+
+		  },
+		  function(callback){ //알람 DATA Query, hss-detail.js
+			  var system_name = [];
+			  var date = [];
+			  var time = [];
+			  var sys_sub_name = [];
+			  var type = [];
+			  var code = [];
+			  
+			  mysqlDB.query('select date, time, system_name, sys_sub_name, alarm_type, alarm_code from alarm_list where alarm_type=\'ALARM\' and alarm_mask=\'N\';',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			date.push(e.date);
+				      			time.push(e.time);
+				      			system_name.push(e.system_name);
+				      			sys_sub_name.push(e.sys_sub_name);
+				      			type.push(e.alarm_type);
+				      			code.push(e.alarm_code);
+				      		});
+				      		var json = {
+				      			date : date,
+				      			time : time,
+				      			system_name : system_name,
+				      			sys_sub_name : sys_sub_name,
+				      			type : type,
+				      			code : code
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+		  },
+		  function(callback){ //Threshold Query, hss-detail.js, fallback(3)
+			  var system = [];
+			  var th0 = [];
+			  var th1 = [];
+			  var th2 = [];
+			  var th3 = [];
+			  var th4 = [];
+			  var th5 = [];
+			  var th6 = [];
+			  var th7 = [];
+			  var th8 = [];
+			  var th9 = [];
+			  var th10 = [];
+			  var th11 = [];
+			  var th12 = [];
+			  var th13 = [];
+			  
+			  mysqlDB.query('select system, th0, th1, th2, th3, th4, th5, th6, th7, th8, th9, th10, th11, th12, th13 from threshold_list where system like \'%MME\';',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system.push(e.system);
+				      			th0.push(e.th0);
+				      			th1.push(e.th1);
+				      			th2.push(e.th2);
+				      			th3.push(e.th3);
+				      			th4.push(e.th4);
+				      			th5.push(e.th5);
+				      			th6.push(e.th6);
+				      			th7.push(e.th7);
+				      			th8.push(e.th8);
+				      			th9.push(e.th9);
+				      			th10.push(e.th10);
+				      			th11.push(e.th11);
+				      			th12.push(e.th12);
+				      			th13.push(e.th13);
+				      		});
+				      		var json = {
+				      			system : system,
+				      			th0 : th0,
+				      			th1 : th1,
+				      			th2 : th2,
+				      			th3 : th3,
+				      			th4 : th4,
+				      			th5 : th5,
+				      			th6 : th6,
+				      			th7 : th7,
+				      			th8 : th8,
+				      			th9 : th9,
+				      			th10 : th10,
+				      			th11 : th11,
+				      			th12 : th12,
+				      			th13 : th13
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+		  },
+	  ],
+	  function(err,results){
+	    if(err)console.log(err);
+	    var result = {
+	      result_code: result_code,
+	      result_msg: result_msg,
+	      result:results
+	    };
+	    res.send(JSON.stringify(result));
+	  });	
+});
+
+router.get('/v1/sgw-list', function(req, res, next) {
+	  /* API Send body */
+		  var result_code = 1;
+		  var result_msg = "success";
+		  
+		  async.parallel([
+			  function(callback){
+				  var system_name = [];
+				  var system_type = [];
+				  var curSess = [];
+				  var totSess = [];
+				  mysqlDB.query('select system_name, system_type, current_session, max_session from system_info_sgw;',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system_name.push(e.system_name);
+				      			system_type.push(e.system_type);
+				      			curSess.push(Math.round(e.current_session));
+				      			totSess.push(Math.round(e.max_session));
+				      		});
+				      		var json = {
+				      			system_name : system_name,
+				      			system_type : system_type,
+				      			curSess : curSess,
+				      			totSess : totSess
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+			  },
+			  // DATA PGW 요약 정보 전송
+			  function(callback){
+				  var curLCnt = [];
+				  var totLCnt = [];
+				  var curLSess = [];
+				  var totLSess = [];
+				  var curLBps =[];
+				  var totLBps =[];
+				  
+				  mysqlDB.query('select (select count(system_name) from system_info_sgw where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\') and system_type=' + '"L"'+ ') as curLCnt, ' +
+						  		'count(system_name) as totLCnt, '+
+						        'sum(current_session) as curLSess, ' +
+						        '(select sum(max_session) from system_info_sgw where  system_type=' + '"L"'+ ') as totLSess, ' +
+						        'sum(current_bps) as curLBps, sum(max_bps) as totLBps ' +
+						        'from system_info_sgw where system_type=' + '"L"',
+						  function(error, results, fields) {
+						  	if (error) {
+					      		console.log(error);
+					      	} else {
+					      		results.forEach(function(e) {
+					      			curLCnt.push(e.curLCnt);
+					      			totLCnt.push(e.totLCnt);
+					      			curLSess.push(e.curLSess);
+					      			totLSess.push(e.totLSess);
+					      			curLBps.push((Number(e.curLBps)/1073741824).toFixed(2));
+					      			totLBps.push((Number(e.totLBps)/1073741824).toFixed(2));
+					      		});
+					      		var json = {
+					      			curLCnt : curLCnt,
+					      			totLCnt : totLCnt,
+					      			curLSess : curLSess,
+					      			totLSess : totLSess,
+					      			curLBps : curLBps,
+					      			totLBps : totLBps
+					      		};
+					      		callback(null,json);
+					      	};
+					  });
+			  },
+			  // 장애 SYSTEM Animation 표시
+			  function(callback){
+				  var system_name = [];
+
+				  mysqlDB.query('select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\' and system_name LIKE ' + '"%SGW%"',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system_name.push(e.system_name);
+				      		});
+				      		var json = {
+				      			system_name : system_name,
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+			  },
+			  // HDV PGW 요약 정보 전송
+			  function(callback){
+				  var curVCnt = [];
+				  var totVCnt = [];
+				  var curVSess = [];
+				  var totVSess = [];
+				  var curVBps =[];
+				  var totVBps =[];
+				  
+				  mysqlDB.query('select (select count(system_name) from system_info_sgw where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\') and system_type=' + '"V"'+ ') as curVCnt, ' +
+						  		'count(system_name) as totVCnt, '+
+						        'sum(current_session) as curVSess, ' +
+						        '(select sum(max_session) from system_info_sgw where system_type=' + '"V"'+ ') as totVSess, ' +
+						        'sum(current_bps) as curVBps, sum(max_bps) as totVBps ' +
+						        'from system_info_sgw where system_type=' + '"V"',
+						  function(error, results, fields) {
+						  	if (error) {
+					      		console.log(error);
+					      	} else {
+					      		results.forEach(function(e) {
+					      			curVCnt.push(e.curVCnt);
+					      			totVCnt.push(e.totVCnt);
+					      			curVSess.push(e.curVSess);
+					      			totVSess.push(e.totVSess);
+					      			curVBps.push((Number(e.curVBps)/1073741824).toFixed(2));
+					      			totVBps.push((Number(e.totVBps)/1073741824).toFixed(2));
+					      		});
+					      		var json = {
+					      			curVCnt : curVCnt,
+					      			totVCnt : totVCnt,
+					      			curVSess : curVSess,
+					      			totVSess : totVSess,
+					      			curVBps : curVBps,
+					      			totVBps : totVBps
+					      		};
+					      		callback(null,json);
+					      		
+					      	};
+					  });
+			  },
+			  // HDV PGW 요약 정보 전송
+			  function(callback){
+				  var curSCnt = [];
+				  var totSCnt = [];
+				  var curSSess = [];
+				  var totSSess = [];
+				  var curSBps =[];
+				  var totSBps =[];
+				  
+				  mysqlDB.query('select (select count(system_name) from system_info_sgw where not system_name in (select distinct system_name from alarm_list where alarm_type in (\'ALARM\',\'STAT\') and alarm_mask =\'N\') and system_type=' + '"S"'+ ') as curSCnt, ' +
+						  		'count(system_name) as totSCnt, '+
+						        'sum(current_session) as curSSess, ' +
+						        '(select sum(max_session) from system_info_sgw where system_type=' + '"S"'+ ') as totSSess, ' +
+						        'sum(current_bps) as curSBps, sum(max_bps) as totSBps ' +
+						        'from system_info_sgw where system_type=' + '"S"',
+						  function(error, results, fields) {
+						  	if (error) {
+					      		console.log(error);
+					      	} else {
+					      		results.forEach(function(e) {
+					      			curSCnt.push(e.curSCnt);
+					      			totSCnt.push(e.totSCnt);
+					      			curSSess.push(e.curSSess);
+					      			totSSess.push(e.totSSess);
+					      			curSBps.push((Number(e.curSBps)/1073741824).toFixed(2));
+					      			totSBps.push((Number(e.totSBps)/1073741824).toFixed(2));
+					      		});
+					      		var json = {
+					      			curSCnt : curSCnt,
+					      			totSCnt : totSCnt,
+					      			curSSess : curSSess,
+					      			totSSess : totSSess,
+					      			curSBps : curSBps,
+					      			totSBps : totSBps
+					      		};
+					      		callback(null,json);
+					      		
+					      	};
+					  });
+			  }
+	      ],
+		  function(err,results){
+		    if(err)console.log(err);
+		    var result = {
+		      result_code: result_code,
+		      result_msg: result_msg,
+		      result:results
+		    };
+		    res.send(JSON.stringify(result));
+		  });
+});
+	
+router.get('/v1/sgw-list/:number', function(req, res, next) {
+		  /* API Send body */
+		  var result_code = 1;
+		  var result_msg = "success";
+		  
+		  async.parallel([ //상면,세션,bps DATA Query, pgw-detail.js
+			  function(callback){
+				  var system_name = [];
+				  var building = [];
+				  var floor_plan = [];
+				  var curSess = [];
+				  var totSess = [];
+				  var curBps = [];
+				  var totBps = [];
+				  mysqlDB.query('select system_name, building, floor_plan, current_session, max_session, current_bps, max_bps from system_info_sgw;',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system_name.push(e.system_name);
+				      			building.push(e.building);
+				      			floor_plan.push(e.floor_plan);
+				      			curSess.push((e.current_session/10000).toFixed(1));
+				      			totSess.push((e.max_session/10000).toFixed(0));
+				      			curBps.push((e.current_bps/1073741824).toFixed(2));
+				      			totBps.push((e.max_bps/1073741824).toFixed(2));
+				      		});
+				      		var json = {
+				      			system_name : system_name,
+				      			building : building,
+				      			floor_plan : floor_plan,
+				      			curSess : curSess,
+				      			totSess : totSess,
+				      			curBps : curBps,
+				      			totBps : totBps
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+			  },
+			  function(callback){ //통계 DATA Query, pgw-detail.js
+				  var system_name = [];
+				  var system_type = [];
+				  var date = [];
+				  var time = [];
+				  var type = [];
+				  var succ_rate = [];
+				  mysqlDB.query('select sgw_stat_list.system_name, system_info_sgw.system_type, sgw_stat_list.date, sgw_stat_list.time, sgw_stat_list.type, sgw_stat_list.succ_rate from sgw_stat_list, system_info_sgw where sgw_stat_list.system_name = system_info_sgw.system_name;',
+					  function(error, results, fields) {
+					  	if (error) {
+				      		console.log(error);
+				      	} else {
+				      		results.forEach(function(e) {
+				      			system_name.push(e.system_name);
+				      			system_type.push(e.system_type);
+				      			date.push(e.date);
+				      			time.push(e.time);
+				      			type.push(e.type);
+				      			succ_rate.push(Number(e.succ_rate));
+				      		});
+				      		var json = {
+				      			system_name : system_name,
+				      			system_type : system_type,
+				      			date : date,
+				      			time : time,
+				      			type : type,
+				      			succ_rate : succ_rate
+				      		}
+				      		callback(null,json);
+				      	}
+				  });
+
+			  },
+			  function(callback){ //알람 DATA Query, pgw-detail.js
+				  var system_name = [];
+				  var date = [];
+				  var time = [];
+				  var sys_sub_name = [];
+				  var type = [];
+				  var code = [];
+				  
+				  mysqlDB.query('select date, time, system_name, sys_sub_name, alarm_type, alarm_code from alarm_list where alarm_type=\'ALARM\' and alarm_mask=\'N\';',
+						  function(error, results, fields) {
+						  	if (error) {
+					      		console.log(error);
+					      	} else {
+					      		results.forEach(function(e) {
+					      			date.push(e.date);
+					      			time.push(e.time);
+					      			system_name.push(e.system_name);
+					      			sys_sub_name.push(e.sys_sub_name);
+					      			type.push(e.alarm_type);
+					      			code.push(e.alarm_code);
+					      		});
+					      		var json = {
+					      			date : date,
+					      			time : time,
+					      			system_name : system_name,
+					      			sys_sub_name : sys_sub_name,
+					      			type : type,
+					      			code : code
+					      		}
+					      		callback(null,json);
+					      	}
+					  });
+			  },
+			  function(callback){ //Threshold Query, hss-detail.js, fallback(3)
+				  var system = [];
+				  var th0 = [];
+				  var th1 = [];
+				  var th2 = [];
+				  var th3 = [];
+				  
+				  mysqlDB.query('select system, th0, th1, th2, th3 from threshold_list where system like \'%SGW\';',
+						  function(error, results, fields) {
+						  	if (error) {
+					      		console.log(error);
+					      	} else {
+					      		results.forEach(function(e) {
+					      			system.push(e.system);
+					      			th0.push(e.th0);
+					      			th1.push(e.th1);
+					      			th2.push(e.th2);
+					      			th3.push(e.th3);
+					      		});
+					      		var json = {
+					      			system : system,
+					      			th0 : th0,
+					      			th1 : th1,
+					      			th2 : th2,
+					      			th3 : th3,
+					      		}
+					      		callback(null,json);
+					      	}
+					  });
+			  }
+		  ],
+		  function(err,results){
+		    if(err)console.log(err);
+		    var result = {
+		      result_code: result_code,
+		      result_msg: result_msg,
+		      result:results
+		    };
+		    res.send(JSON.stringify(result));
+		  });	
+});
+
+
 
 module.exports = router;

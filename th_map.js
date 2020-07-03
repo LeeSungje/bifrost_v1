@@ -1,67 +1,3 @@
-function getDateTime(){
-    var date = new Date();
- let day = (date.getDate()<10? '0' : '')+date.getDate();
- let month = ((date.getMonth()+ 1)<10? '0':'')+(date.getMonth()+1);
- let year = date.getFullYear();
- let hours = (date.getHours()<10? '0' : '')+date.getHours();
- let minutes = (date.getMinutes()<10? '0' : '')+date.getMinutes();
- let seconds = (date.getSeconds()<10? '0' : '')+date.getSeconds();
- 
- return (year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds);
-}
-
-function getPrevDateTime(){
- let PrevTime = new Date();
- PrevTime.setMinutes(PrevTime.getMinutes()-5);
- 
- let day = (PrevTime.getDate()<10? '0' : '')+PrevTime.getDate();
- let month = ((PrevTime.getMonth()+ 1)<10? '0':'')+(PrevTime.getMonth()+1);
- let year = PrevTime.getFullYear();
- let hours = (PrevTime.getHours()<10? '0' : '')+PrevTime.getHours();
- let minutes = (PrevTime.getMinutes()<10? '0' : '')+PrevTime.getMinutes();
- let seconds = (PrevTime.getSeconds()<10? '0' : '')+PrevTime.getSeconds();
- 
- return (year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds);
-} 
-
-
-var sound_status = 1; //Sound ON
-var audio = "<audio autoplay loop class=\"audio\" src='/alert_sound.mp3'></audio>";
-
-function changeStatus(){
-	
-	if(sound_status == 1){ //Sound ON이면
-		sound_status = 0; //OFF으로
-		document.getElementById('speaker').src='/mute.png'; //mute 이미지로 바꾸기
-		
-		$("#skt-map-cont-2").find(".audio").remove(); //알람 소리 제거
-	}
-	
-	else{ //Sound OFF면
-		sound_status = 1; //ON으로
-		document.getElementById('speaker').src='/speaker2.png';
-		
-		if(document.getElementsByClassName("alarm-twinkle").length > 0) 
-		{
-			$("#skt-map-cont-2").append(audio);
-		}
-	}
-	
-	console.log(sound_status);
-}
-
-function play_audio(){
-	
-	if(document.getElementsByClassName("alarm-twinkle").length > 0 && sound_status==1) 
-	{
-		$("#skt-map-cont-2").append(audio);
-	}
-} 
-
-function pause_audio(){
-	$("#skt-map-cont-2").find(".audio").remove();
-}
-
 /** draw variable is used to plot charts -JJ- */
 var draw = {
   dunsan: {
@@ -385,6 +321,40 @@ function ajaxUpdateDtCharts(site){
   });
 }
 
+function ajaxCntErrSystem(url){
+	$.ajax({
+	    url: url,
+	    type: "GET"
+	  })
+	  .done(function(data){
+	    var json = JSON.parse(data);
+	    var eventTime = json.result.eventTime;
+	    var alarm_type = json.result.alarm_type;
+	    var system_name = json.result.serverName;
+	    var serverLocation = json.result.serverLocation;
+	    var event = json.result.event;
+	    var site = json.result.site;
+	    
+	    var value_cri = 0;
+	    
+	    eventTime.forEach(function(e,index){
+	    	if(alarm_type[index] == "ALARM"){
+	    		value_cri++;
+	       	}
+	    	if(alarm_type[index] == "CLEAR"){
+	    		var cnt=0;
+	        	for(i=0; i<index; i++){
+	        		if(serverLocation[index] == serverLocation[i] && alarm_type[i] == "ALARM" && eventTime[index] > eventTime[i] ){
+	        			if(cnt<1){
+	        				cnt++;
+		        			value_cri--;
+	        			}
+	        		}
+	        	}
+	        }
+	    });
+	  });
+}
 
 function ajaxUpdateAlarm(url){
   $.ajax({
@@ -401,17 +371,12 @@ function ajaxUpdateAlarm(url){
     var site = json.result[1].site;
     var alarm_code = json.result[1].alarm_code;
     
-    console.log(json.result[1]);
-    
     var statusClass = "";
     var statusText = "";
     
     $("#alarm-table").find(".skt-alarm-txt").remove();
     $(".skt-map-center").removeClass("cri-alert-on maj-alert-on min-alert-on skt-map-status-cri skt-map-status-maj skt-map-status-min");
     $(".sys-container").removeClass("alarm-twinkle");
-
-	pause_audio();
-	
     
     eventTime.forEach(function(e,index){
     	var timeAddHtml = "<p class='skt-alarm-txt'>"+eventTime[index]+"</p>";
@@ -423,27 +388,25 @@ function ajaxUpdateAlarm(url){
 	    $("#alarmLocationContainer").append(locationAddHtml);
 	    $("#alarmDetailsContainer").append(eventAddHtml);
 	    
-	    
-	    
 	    if((system_name.toString()).match("PGW*")){
 	      	 $("#PGW").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("SGW*")){
-      	 $("#SGW").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("MME*")){
-      	 $("#MME").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("MSS*")){
-      	 $("#MSS").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("TAS*")){
-      	 $("#TAS").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("HSS*")){
-      	 $("#HSS").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("HLR*")){
-      	 $("#HLR").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("AUC*")){
-      	 $("#AUC").addClass("alarm-twinkle");
-       }if((system_name.toString()).match("UCMS*")){
-      	 $("#UCMS").addClass("alarm-twinkle");
-       }
+	       }else if((system_name.toString()).match("SGW*")){
+	      	 $("#SGW").addClass("alarm-twinkle");
+	       }else if((system_name.toString()).match("MME*")){
+	      	 $("#MME").addClass("alarm-twinkle");
+	       }else if((system_name.toString()).match("MSS*")){
+	      	 $("#MSS").addClass("alarm-twinkle");
+	       }else if((system_name.toString()).match("TAS*")){
+	      	 $("#TAS").addClass("alarm-twinkle");
+	       }else if((system_name.toString()).match("IBCF*")){
+	      	 $("#IBCF").addClass("alarm-twinkle");
+	       }else if((system_name.toString()).match("HLR*")){
+	      	 $("#HLR").addClass("alarm-twinkle");
+	       }else if((system_name.toString()).match("AUC*")){
+	      	 $("#AUC").addClass("alarm-twinkle");
+	       }else if((system_name.toString()).match("UCMS*")){
+	      	 $("#UCMS").addClass("alarm-twinkle");
+	       }
     });
     	
     if(site != 0) { 
@@ -451,10 +414,6 @@ function ajaxUpdateAlarm(url){
     }
 	$("#skt-map-center-"+site).addClass(statusClass);
 	$("#skt-map-center-"+site).find(".skt-map-status-btn").text(statusText);
-	
-	//sj
-	play_audio();
-	
   });
 }
 /** 2020.02.21  -MK- */
@@ -478,7 +437,7 @@ function drawPieChart(data1, data2, elementId){
               },
               title: {
                 display: true,
-                text: (data1/data2*100).toFixed(2)+"%"
+                text: data1/data2*100+"%"
               }
             }
     }
@@ -494,60 +453,24 @@ function ajaxUpdate5Gsystem(url){
   })
   .done(function(data){
     var json = JSON.parse(data);
-    var curPGWCnt = json.result[0].curPGWCnt;
-    var totPGWCnt = json.result[0].totPGWCnt;
-    var curPGWSess = json.result[0].curPGWSess;
-    var totPGWSess = json.result[0].totPGWSess;
+    var curPGWCnt = json.result.curPGWCnt;
+    var totPGWCnt = json.result.totPGWCnt;
+    var curPGWSess = json.result.curPGWSess;
+    var totPGWSess = json.result.totPGWSess;
+    var curMMECnt = json.result.curMMEcnt;
+    var totMMECnt = json.result.totMMEcnt;
+    var curMMESess = json.result.curMMESess;
+    var totMMESess = json.result.totMMESess;
     
-    var curTASCnt = json.result[1].curTASCnt;
-    var totTASCnt = json.result[1].totTASCnt;
-    var curTASSub = json.result[1].curTASSub;
-    var totTASSub = json.result[1].totTASSub;
-    
-  //fallback(2) HSS 정보
-    var curHSSCnt = json.result[2].curHSSCnt;
-    var totHSSCnt = json.result[2].totHSSCnt;
-    var curHSSTps = json.result[2].curHSSTps;
-    var totHSSTps = json.result[2].totHSSTps;
-    
-    //fallback(3) HLR 정보
-    var curHLRCnt = json.result[3].curHLRCnt;
-    var totHLRCnt = json.result[3].totHLRCnt;
-    var curHLRTps = json.result[3].curHLRTps;
-    var totHLRTps = json.result[3].totHLRTps;
-    
-    //fallback(4) AuC 정보
-    var curAuCCnt = json.result[4].curAuCCnt;
-    var totAuCCnt = json.result[4].totAuCCnt;
-    var curAuCTps = json.result[4].curAuCTps;
-    var totAuCTps = json.result[4].totAuCTps;
-    
-  //fallback(5) UCMS 정보
-    var curUCMSCnt = json.result[5].curUCMSCnt;
-    var totUCMSCnt = json.result[5].totUCMSCnt;
-    var curUCMSTps = json.result[5].curUCMSTps;
-    var totUCMSTps = json.result[5].totUCMSTps;
-
-    
-    
-    drawPieChart(curPGWCnt, totPGWCnt, "doughnut-chart"); //pgw
-    drawPieChart(curTASCnt, totTASCnt, "doughnut-chart-tas"); 
-    drawPieChart(curHSSCnt, totHSSCnt, "doughnut-chart-hss"); 
-    drawPieChart(curHLRCnt, totHLRCnt, "doughnut-chart-hlr");
-    drawPieChart(curAuCCnt, totAuCCnt, "doughnut-chart-auc");
-    drawPieChart(curUCMSCnt, totUCMSCnt, "doughnut-chart-ucms");
-	drawPieChart(curAuCCnt, totAuCCnt, "doughnut-chart-auc");
-    drawPieChart(curUCMSCnt, totUCMSCnt, "doughnut-chart-ucms");
-    
-    console.log(json.result[1]);
+    drawPieChart(curPGWCnt, totPGWCnt, "doughnut-chart"); 
+    drawPieChart(curMMECnt, totMMECnt, "doughnut-chart"); 
     
     //TEST용 PIE Chart 삽입
     for (var i=1; i<=11; i++){
     	drawPieChart(10, 10, "doughnut-chart"+i); 
     }
     //$("#5G_PGW").attr(, "onclick="location.href='http://art-life.tistory.com'"")
-    $(".sysGroup_table").find(".sys-txt-value").remove();
-	$(".sysGroup_table").find(".sys-txt-value-hlr").remove();
+    $("#5G_PGW_stat").find(".sys-txt-value").remove();
     
     totPGWCnt.forEach(function(e,index){
       var curPGWCntAddHtml = "<span class='sys-txt-value'>"+curPGWCnt[index]+"</span>"; 
@@ -559,61 +482,16 @@ function ajaxUpdate5Gsystem(url){
       $("#curPGWSesContainer").append(curSessAddHtml);
       $("#totPGWSesContainer").append(totSessAddHtml);
     });
-      
-    totTASCnt.forEach(function(e,index){
-      var curTASCntAddHtml = "<span class='sys-txt-value'>"+curTASCnt[index]+"</span>"; 
-      var totTASCntAddHtml = "<span class='sys-txt-value'>"+totTASCnt[index]+"</span>";
-      var curSubAddHtml = "<span class='sys-txt-value'>"+curTASSub[index]+"</span>";
-      var totSubAddHtml = "<span class='sys-txt-value'>"+totTASSub[index]+"</span>";
-      $("#curTASCntContainer").append(curTASCntAddHtml);
-      $("#totTASCntContainer").append(totTASCntAddHtml);
-      $("#curTASSesContainer").append(curSubAddHtml);
-      $("#totTASSesContainer").append(totSubAddHtml);
-    });
-    
-    totHSSCnt.forEach(function(e,index){
-        var curHSSCntAddHtml = "<span class='sys-txt-value'>"+curHSSCnt[index]+"</span>"; 
-        var totHSSCntAddHtml = "<span class='sys-txt-value'>"+totHSSCnt[index]+"</span>";
-        var curTpsAddHtml = "<span class='sys-txt-value'>"+curHSSTps[index]+"</span>";
-        var totTpsAddHtml = "<span class='sys-txt-value'>"+totHSSTps[index]+"</span>";
-        $("#curHSSCntContainer").append(curHSSCntAddHtml);
-        $("#totHSSCntContainer").append(totHSSCntAddHtml);
-        $("#curHSSTpsContainer").append(curTpsAddHtml);
-        $("#totHSSTpsContainer").append(totTpsAddHtml);
-      });
-    
-    totHLRCnt.forEach(function(e,index){
-        var curHLRCntAddHtml = "<span class='sys-txt-value'>"+curHLRCnt[index]+"</span>"; 
-        var totHLRCntAddHtml = "<span class='sys-txt-value'>"+totHLRCnt[index]+"</span>";
-        var curTpsAddHtml = "<span class='sys-txt-value-hlr'>"+curHLRTps[index]+"</span>";
-        var totTpsAddHtml = "<span class='sys-txt-value-hlr'>"+totHLRTps[index]+"Tps</span>";
-        $("#curHLRCntContainer").append(curHLRCntAddHtml);
-        $("#totHLRCntContainer").append(totHLRCntAddHtml);
-        $("#curHLRTpsContainer").append(curTpsAddHtml);
-        $("#totHLRTpsContainer").append(totTpsAddHtml);
-      });
-    
-    totAuCCnt.forEach(function(e,index){
-        var curAuCCntAddHtml = "<span class='sys-txt-value'>"+curAuCCnt[index]+"</span>"; 
-        var totAuCCntAddHtml = "<span class='sys-txt-value'>"+totAuCCnt[index]+"</span>";
-        var curTpsAddHtml = "<span class='sys-txt-value'>"+curAuCTps[index]+"</span>";
-        var totTpsAddHtml = "<span class='sys-txt-value'>"+totAuCTps[index]+"</span>";
-        $("#curAuCCntContainer").append(curAuCCntAddHtml);
-        $("#totAuCCntContainer").append(totAuCCntAddHtml);
-        $("#curAuCTpsContainer").append(curTpsAddHtml);
-        $("#totAuCTpsContainer").append(totTpsAddHtml);
-      });
-    
-    totUCMSCnt.forEach(function(e,index){
-        var curUCMSCntAddHtml = "<span class='sys-txt-value'>"+curUCMSCnt[index]+"</span>"; 
-        var totUCMSCntAddHtml = "<span class='sys-txt-value'>"+totUCMSCnt[index]+"</span>";
-        var curTpsAddHtml = "<span class='sys-txt-value'>"+curUCMSTps[index]+"</span>";
-        var totTpsAddHtml = "<span class='sys-txt-value'>"+totUCMSTps[index]+"</span>";
-        $("#curUCMSCntContainer").append(curUCMSCntAddHtml);
-        $("#totUCMSCntContainer").append(totUCMSCntAddHtml);
-        $("#curUCMSTpsContainer").append(curTpsAddHtml);
-        $("#totUCMSTpsContainer").append(totTpsAddHtml);
-      });
+     totMMECnt.forEach(function(e,index){
+        var curMMECntAddHtml = "<span class='sys-txt-value'>"+curMMECnt[index]+"</span>"; 
+        var totMMECntAddHtml = "<span class='sys-txt-value'>"+totMMECnt[index]+"</span>";
+        var curSessAddHtml = "<span class='sys-txt-value'>"+curMMESess[index]+"</span>";
+        var totSessAddHtml = "<span class='sys-txt-value'>"+totMMESess[index]+"</span>";
+        $("#curMMECntContainer").append(curMMECntAddHtml);
+        $("#totMMECntContainer").append(totMMECntAddHtml);
+        $("#curMMESesContainer").append(curSessAddHtml);
+        $("#totMMESesContainer").append(totSessAddHtml);
+     });
   });
 }
 
@@ -629,35 +507,57 @@ function ajaxUpdateCenterStatus(url){
     var cluster = json.result;
     //var site = json.result.site;
     //var system_name = json.result.system_name;
+ /**   
+    $(".skt-map-center").removeClass("cri-alert-on maj-alert-on min-alert-on skt-map-status-cri skt-map-status-maj skt-map-status-min");
+
+    for(var key in cluster){
+      var site = json.result.site;
+      let system_name = json.result.system_name;
+      var value_cri = 0;
+      var value_maj = 0;
+      var value_min = 0;
+      var statusClass = "";
+      var statusText = "";
+      
+      if(cluster[key] != null){ 
+    	  value_cri++;
+      }
+      
+      if(value_cri) { 
+    	  statusClass = "cri-alert-on skt-map-status-cri"; statusText = "critical"; 
+      }
+      
+     
+     if((system_name.toString()).match("PGW*")){
+    	 $("#PGW").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("SGW*")){
+    	 $("#SGW").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("MME*")){
+    	 $("#MME").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("MSS*")){
+    	 $("#MSS").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("TAS*")){
+    	 $("#TAS").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("IBCF*")){
+    	 $("#IBCF").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("HLR*")){
+    	 $("#HLR").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("AUC*")){
+    	 $("#AUC").addClass("alarm-twinkle");
+     }else if((system_name.toString()).match("UCMS*")){
+    	 $("#UCMS").addClass("alarm-twinkle");
+     }
+      //else if(value_maj) { statusClass = "maj-alert-on skt-map-status-maj"; statusText = "major"; }
+      //else if(value_min) { statusClass = "min-alert-on skt-map-status-min"; statusText = "minor"; }
+
+      $("#skt-map-center-"+site).addClass(statusClass);
+      $("#"+system_name).addClass(statusClass);
+      //$("#DNSstat").parents(".pgw-stat-panel").addClass("alarm-twinkle");
+      $("#skt-map-center-"+site).find(".skt-map-status-btn").text(statusText);
+    }
+  */
   });
 }
-
-/** 임계치 보다 낮은 PGW 통계 data를 alarm_list table에 insert하는 logic*/
-function ajaxInsertStatToAlarm(url){
-  $.ajax({
-    url: url,
-    type: "GET"
-  })
-  .done(function(data){
-	var sys_num = $("#inputCurrentSystem").attr("val");
-	var json = JSON.parse(data);
-	
-
-	//fallback(0)
-	var system_namef0 = json.result[0].system_name;
-	var system_typef0 = json.result[0].system_type;
-    var date = json.result[0].date;
-    var time = json.result[0].time;
-	var type = json.result[0].type;
-	var succ_rate = json.result[0].succ_rate;
-	var att = json.result[0].att;
-	
-    
-
-
-  });
-}
-
 
 /** 2019.05.18 Customized setInterval function to execute the function before set setInterval action */
 function executeSetInterval(func, delay){
@@ -727,7 +627,7 @@ function executeSetInterval(func, delay){
 	               ["wonju", "원주"],["yeongju", "영주"],["daegu", "대구"],["busan", "부산"],["jinju", "진주"],["jeju", "제주"]];
   var ttlMap = new Map(ttlMapArr);
 
-  const _PERIOD_ = 1000*30;
+  const _PERIOD_ = 1000*60;
 
   for(var key in centers){
     /** Append the center info boxes to map */
@@ -853,7 +753,6 @@ function executeSetInterval(func, delay){
     ajaxUpdateCenterStatus("/api/v1/map");
     ajaxUpdateAlarm("/api/v1/alarms?");
     ajaxUpdate5Gsystem("/api/v1/5Gsystem?");
-    ajaxInsertStatToAlarm("/api/v1/stats");
     
   }, _PERIOD_);
 

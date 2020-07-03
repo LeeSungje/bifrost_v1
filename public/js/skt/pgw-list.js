@@ -4,7 +4,7 @@ function executeSetInterval(func, delay){
 }
 
 var sound_status = 1; //Sound ON
-var audio = "<audio autoplay loop class=\"audio\" src='/bifrost_alarm.mp3'></audio>";
+var audio = "<audio autoplay loop class=\"audio\" src='/alert_sound.mp3'></audio>";
 
 function changeStatus(){
 	

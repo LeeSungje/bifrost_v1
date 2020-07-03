@@ -1,0 +1,39 @@
+extends layout
+
+block content
+   input(type="hidden", val='#{system}')#inputCurrentSystem
+   .mme-container
+     .col-sm-12.mme-detail-panel
+       .col-md-offset-4.col-md-2.mme-detail-header
+         .mme-detail-ttl #{system}
+         span#locationContainer
+       .col-md-1.mme-detail-header
+         canvas.mme-chart
+         span#curMMESubContainer
+         span.mme-txt-delimiter &nbsp/&nbsp
+         span#totMMESubContainer
+         span.mme-txt-delimiter Sub
+       .col-sm-offset-3.col-sm-1.mme-rm
+         img(src='/img/title/system_solution.png', alt='', width="80" height="80").a(onclick='location.href="/hss-rm"') 
+         .mme-txt-delimiter 극단적RM 
+     
+     .col-sm-12.mme-detail-panel    
+       .col-sm-5.skt-panel.mme-detail-panel.stat-panel
+         .col-sm-12
+           img(src='/img/title/system_stat.png', alt='', width="40" height="40")
+           span.mme-detail-txt 통계            
+       
+       .col-sm-5.skt-panel.mme-detail-panel.alarm-panel
+         .col-sm-12
+           img(src='/img/title/system_alarm.png', alt='', width="40" height="40")
+           span.mme-detail-txt 알람           
+
+   
+   
+block javascripts
+  script(src="/js/flot/jquery.flot.time.js")
+  script(src="/js/twinkle/jquery.twinkle-0.9.0.min.js")
+  script(src="/js/skt/mme-detail.js")
+  script(src="/js/charts/Chart.js")
+  script(src="/js/utils.js")    
+  
